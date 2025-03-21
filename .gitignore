@@ -1,0 +1,45 @@
+# Python Bytecode files
+*.pyc
+*.pyo
+__pycache__/
+
+# Virtual environment folders
+venv/
+env/
+.git/
+
+# IDE/Editor folders
+.vscode/
+.idea/
+
+# macOS system files
+.DS_Store
+
+# Windows system files
+Thumbs.db
+
+# Jupyter notebook checkpoints
+.ipynb_checkpoints/
+
+# Pytest cache
+.cache/
+
+# Dependency directories
+pip-log.txt
+pip-delete-this-directory.txt
+
+# Environment variable files
+.env
+
+# Other generated files
+*.log
+*.sqlite
+*.db
+*.egg
+*.egg-info
+dist/
+build/
+*.tar.gz
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
