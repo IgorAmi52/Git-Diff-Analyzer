@@ -3,7 +3,6 @@ from remote.github_api import GithubAPI
 from services.repo_mapper import get_remote_service
 
 
-# Test valid cases with different capitalizations
 @pytest.mark.parametrize("provider_name", ['GitHub', 'github', 'GITHUB'])
 def test_get_remote_service_valid(provider_name):
     """
@@ -15,7 +14,6 @@ def test_get_remote_service_valid(provider_name):
         service_class, GithubAPI), f"Expected GithubAPI class, but got {type(service_class)}"
 
 
-# Test invalid cases
 @pytest.mark.parametrize("invalid_provider_name",
                          ['githab',
                           'invalid_input1',
