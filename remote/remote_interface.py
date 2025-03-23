@@ -7,5 +7,9 @@ class RemoteInterface:
         pass
 
     @abstractmethod
-    def get_after_commits(commit_hash):
+    def get_latest_commit(self, branch):
+        pass
+
+    @abstractmethod
+    def get_changed_files(self, base_commit_hash, commit_hash):
         pass

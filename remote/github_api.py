@@ -24,18 +24,30 @@ class GithubAPI(RemoteInterface):
         if response.status_code == 200:
             print("Successfully connected to GitHub repository.")
         else:
-            raise ValueError(f"Failed to connect to the GitHub repository. Status code: {response.status_code}")
+            raise ValueError(
+                f"Failed to connect to the GitHub repository. Status code: {response.status_code}")
 
-    def get_after_commits(self, branch, commit_hash):
-        """Fetch all commits after the given commit hash."""
-        url = f"{self.base_url}/commits"
+    def get_latest_commit(self, branch):
+        """Fetch the latest commit on the given branch."""
+        url = f"{self.base_url}/branches/{branch}"
         headers = {"Authorization": f"token {self.access_token}"}
-        params = {"sha": branch, "since": commit_hash}
 
-        response = requests.get(url, headers=headers, params=params)
+        response = requests.get(url, headers=headers)
         if response.status_code == 200:
-            commits = response.json()
-            return commits
+            return response.json()['commit']['sha']
         else:
-            print(f"Error fetching commits from GitHub API: {response.status_code}")
-            return None
+            raise ValueError("Failed to fetch the latest commit from GitHub.")
+
+    def get_changed_files(self, base_commit_hash, commit_hash):
+        """Get a list of changed files between two commits on GitHub."""
+        url = f"{self.base_url}/compare/{base_commit_hash}...{commit_hash}"
+        headers = {"Authorization": f"token {self.access_token}"}
+
+        response = requests.get(url, headers=headers)
+
+        if response.status_code != 200:
+            raise ValueError(
+                f"Failed to fetch changed files: {response.status_code} - {response.text}")
+
+        changed_files = response.json().get("files", [])
+        return [file["filename"] for file in changed_files]

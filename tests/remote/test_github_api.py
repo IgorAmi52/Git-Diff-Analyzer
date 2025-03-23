@@ -1,74 +1,106 @@
-# tests/services/test_github_api.py
 import pytest
 from unittest.mock import patch, Mock
 from remote.github_api import GithubAPI
 
 
-# Test for successful connection to GitHub API
+# Fixture to create a GithubAPI instance with a mocked connection
+@pytest.fixture
 @patch('requests.get')
-def test_check_connection_success(mock_get):
-    """Test successful connection to GitHub repository."""
-    # Mock the response object
+def github_api(mock_get):
+    """Fixture for GithubAPI that mocks the connection call."""
+    # Mock the response object for connection during initialization
     mock_response = Mock()
     mock_response.status_code = 200
     mock_get.return_value = mock_response
 
-    # Create the GithubAPI object
-    # Should not raise ValueError
-    github_api = GithubAPI("owner", "repo", "access_token")
+    # Return the mocked GithubAPI instance
+    return GithubAPI("owner", "repo", "access_token")
+
+
+# Test for successful connection to GitHub API
+@patch('requests.get')
+def test_check_connection_success(github_api):
+    """Test successful connection to GitHub repository."""
+    # The connection should succeed due to our mock in the fixture
+    assert github_api is not None
 
 
 # Test for failed connection to GitHub API
 @patch('requests.get')
 def test_check_connection_failure(mock_get):
     """Test failed connection to GitHub repository."""
-    # Mock the response object
+    # Mock the response object to simulate a 404 error
     mock_response = Mock()
     mock_response.status_code = 404  # Not Found
     mock_get.return_value = mock_response
 
-    # Create the GithubAPI object, Check if the connection raises an exception
+    # Check if the connection raises an exception
     with pytest.raises(ValueError):
         GithubAPI("owner", "repo", "access_token")
 
 
-# Test for successfully fetching commits after a commit hash
+# Test for successfully fetching commit
 @patch('requests.get')
-def test_get_after_commits_success(mock_get):
-    """Test fetching commits after a given commit hash."""
+def test_get_latest_commit_success(mock_get, github_api):
+    """Test fetching the latest commit on a given branch."""
     # Mock the response object
     mock_response = Mock()
     mock_response.status_code = 200
-    mock_response.json.return_value = [
-        {"sha": "commit1", "commit": {"message": "First commit"}},
-        {"sha": "commit2", "commit": {"message": "Second commit"}}
-    ]
+    mock_response.json.return_value = {"commit": {"sha": "commit1"}}
     mock_get.return_value = mock_response
 
-    # Create the GithubAPI object
-    github_api = GithubAPI("owner", "repo", "access_token")
-
     # Fetch commits after a given commit hash
-    commits = github_api.get_after_commits("main", "merge_base_commit_hash")
+    commit = github_api.get_latest_commit("main")
 
     # Check the response
-    assert len(commits) == 2
-    assert commits[0]['sha'] == "commit1"
-    assert commits[1]['commit']['message'] == "Second commit"
+    assert commit == "commit1"
 
 
 # Test for failed commit fetch
 @patch('requests.get')
-def test_get_after_commits_failure(mock_get):
+def test_get_latest_commit_failure(mock_get, github_api):
     """Test failed commit fetch when GitHub API returns an error."""
     # Mock the response objects
-    mock_get.side_effect = [Mock(status_code=200), Mock(status_code=400)]
+    mock_get.return_value = Mock(status_code=404)
+    with pytest.raises(ValueError, match="Failed to fetch the latest commit from GitHub."):
+        github_api.get_latest_commit("main", )
 
-    # Create the GithubAPI object
-    github_api = GithubAPI("owner", "repo", "access_token")
 
-    # Fetch commits after a given commit hash, should return None on failure
-    commits = github_api.get_after_commits("main", "merge_base_commit_hash")
+# Test for successfully fetching changed files between two commits
+@patch('requests.get')
+def test_get_changed_files_success(mock_get, github_api):
+    """Test fetching changed files between two commits."""
+    # Mock the response object
+    mock_response = Mock()
+    mock_response.status_code = 200
+    mock_response.json.return_value = {
+        "files": [
+            {"filename": "file1.py"},
+            {"filename": "file2.py"}
+        ]
+    }
+    mock_get.return_value = mock_response
 
-    # Check the result (should be None)
-    assert commits is None
+    # Fetch changed files
+    changed_files = github_api.get_changed_files(
+        "base_commit_hash", "commit_hash")
+
+    # Check the response
+    assert len(changed_files) == 2
+    assert "file1.py" in changed_files
+    assert "file2.py" in changed_files
+
+
+# Test for failed fetch of changed files
+@patch('requests.get')
+def test_get_changed_files_failure(mock_get, github_api):
+    """Test failed fetch of changed files when GitHub API returns an error."""
+    # Mock the response object
+    mock_response = Mock()
+    mock_response.status_code = 404  # Not Found
+    mock_response.text = "Not Found"
+    mock_get.return_value = mock_response
+
+    # Attempt to fetch changed files, should raise ValueError
+    with pytest.raises(ValueError, match="Failed to fetch changed files: 404 - Not Found"):
+        github_api.get_changed_files("base_commit_hash", "commit_hash")
