@@ -35,11 +35,11 @@ To install the required dependencies, follow these steps:
 
 This library compares files between a **remote GitHub repository (`branchA`)** and a **local repository (`branchB`)** based on their merge base commit.  
 
-### **1️⃣ Remote GitHub Repository Setup**  
+### Remote GitHub Repository Setup  
 - Ensure you have a **GitHub Personal Access Token (PAT)** with read permissions.  
 - The repository must be **accessible** via GitHub's REST API.  
 
-### **2️⃣ Local Repository Setup**  
+### Local Repository Setup
 - Ensure you have a **local clone** of the repository.  
 - The local repository should have **both `branchA` (fetched remotely) and `branchB` (created locally)**.  
 

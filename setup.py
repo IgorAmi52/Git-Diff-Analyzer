@@ -19,7 +19,7 @@ setup(
     ],
     author="Igor Amidzic",
     author_email="igorami44@gmail.com",
-    description="A library to compare and identify files that were independently changed in both a remote GitHub repository branch (branchA) and a local repository branch (branchB). The library finds all files with the same path that were modified in both branches since the merge base commit, avoiding fetching branchA remotely. It uses GitHub REST or GraphQL API for remote repository requests and command-line git commands for local repository interactions. The library avoids using GitHub-specific or Git-specific libraries and is designed with production-level code, error handling, and tests.",
+    description="A library to compare and identify files that were independently changed in both a remote GitHub repository branch (branchA) and a local repository branch (branchB). The library finds all files with the same path that were modified in both branches since the merge base commit, avoiding fetching branchA remotely. It uses GitHub REST or GraphQL API for remote repository requests and command-line git commands for local repository interactions.",
     long_description=open('README.md').read(),
     long_description_content_type="text/markdown",
 
