@@ -1,6 +1,6 @@
 import logging
-from git_utils.git_commands import *
-from services.repo_mapper import get_remote_service
+from git_diff_analyzer.git_utils.git_commands import *
+from git_diff_analyzer.services.repo_mapper import get_remote_service
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)

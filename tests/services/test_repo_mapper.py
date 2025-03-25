@@ -1,6 +1,6 @@
 import pytest
-from remote.github_api import GithubAPI
-from services.repo_mapper import get_remote_service
+from git_diff_analyzer.remote.github_api import GithubAPI
+from git_diff_analyzer.services.repo_mapper import get_remote_service
 
 
 @pytest.mark.parametrize("provider_name", ['GitHub', 'github', 'GITHUB'])

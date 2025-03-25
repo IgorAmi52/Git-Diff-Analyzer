@@ -1,4 +1,4 @@
-from remote.github_api import GithubAPI
+from git_diff_analyzer.remote.github_api import GithubAPI
 # More git remote providers can be added here(eg. GitLab, Bitbucket)
 
 

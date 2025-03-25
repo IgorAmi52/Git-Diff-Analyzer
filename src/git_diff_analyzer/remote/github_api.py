@@ -1,7 +1,7 @@
 import logging
 import requests
 
-from remote.remote_interface import RemoteInterface
+from git_diff_analyzer.remote.remote_interface import RemoteInterface
 
 logger = logging.getLogger(__name__)
 

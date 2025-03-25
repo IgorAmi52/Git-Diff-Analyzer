@@ -1,10 +1,10 @@
 import pytest
 from unittest.mock import patch, Mock
-from remote.github_api import GithubAPI
+from git_diff_analyzer.remote.github_api import GithubAPI
 
 
 @pytest.fixture
-@patch('remote.github_api.GithubAPI._make_request')
+@patch('git_diff_analyzer.remote.github_api.GithubAPI._make_request')
 def github_api(mock_make_request):
     """Fixture for GithubAPI that mocks the connection call."""
     mock_response = Mock()
@@ -18,7 +18,7 @@ def test_check_connection_success(github_api):
     assert github_api is not None
 
 
-@patch('remote.github_api.GithubAPI._make_request')
+@patch('git_diff_analyzer.remote.github_api.GithubAPI._make_request')
 def test_check_connection_failure(mock_make_request):
     """Test failed connection to GitHub repository."""
     mock_make_request.side_effect = ValueError("Failed to connect to GitHub")
@@ -26,7 +26,7 @@ def test_check_connection_failure(mock_make_request):
         GithubAPI("owner", "repo", "access_token")
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_latest_commit_success(mock_make_request, github_api):
     """Test fetching the latest commit on a given branch."""
     mock_response = Mock()
@@ -39,7 +39,7 @@ def test_get_latest_commit_success(mock_make_request, github_api):
     assert commit == "commit1"
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_latest_commit_failure(mock_make_request, github_api):
     """Test failed commit fetch when GitHub API returns an error."""
     mock_make_request.side_effect = ValueError(
@@ -48,7 +48,7 @@ def test_get_latest_commit_failure(mock_make_request, github_api):
         github_api.get_latest_commit("main", )
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_changed_files_success(mock_make_request, github_api):
     """Test fetching changed files between two commits."""
     mock_response = Mock()
@@ -69,7 +69,7 @@ def test_get_changed_files_success(mock_make_request, github_api):
     assert "file2.py" in changed_files
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_changed_files_failure(mock_make_request, github_api):
     """Test failed fetch of changed files when GitHub API returns an error."""
     mock_make_request.side_effect = ValueError(
@@ -78,7 +78,7 @@ def test_get_changed_files_failure(mock_make_request, github_api):
         github_api.get_changed_files("base_commit_hash", "commit_hash")
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_file_content_success(mock_make_request, github_api):
     """Test fetching file content from a commit."""
     mock_response = Mock()
@@ -90,7 +90,7 @@ def test_get_file_content_success(mock_make_request, github_api):
     assert content == "file content"
 
 
-@patch("remote.github_api.GithubAPI._make_request")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI._make_request")
 def test_get_file_content_failure(mock_make_request, github_api):
     """Test failed fetch of file content when GitHub API returns an error."""
     mock_make_request.side_effect = ValueError(
@@ -99,7 +99,7 @@ def test_get_file_content_failure(mock_make_request, github_api):
         github_api.get_file_content("commit_sha", "file_path")
 
 
-@patch("remote.github_api.GithubAPI.get_file_content")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI.get_file_content")
 def test_is_diff_different(mock_get_file_content, github_api):
     """Test successful diff check between two files."""
     mock_get_file_content.side_effect = ["file1 content", "file2 content"]
@@ -107,7 +107,7 @@ def test_is_diff_different(mock_get_file_content, github_api):
     assert is_diff is True
 
 
-@patch("remote.github_api.GithubAPI.get_file_content")
+@patch("git_diff_analyzer.remote.github_api.GithubAPI.get_file_content")
 def test_is_diff_same(mock_get_file_content, github_api):
     """Test failed diff check when file content fetch fails."""
     mock_get_file_content.side_effect = [

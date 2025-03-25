@@ -14,23 +14,39 @@ This project is a Python library that detects and compares file changes in two b
 ## Installation
 
 ### Prerequisites  
-- Python 3.x  
+- Python 3.x
+- `pip` and `build` installed
 - Git installed on your system  
 - A GitHub personal access token  
-
-To install the required dependencies, follow these steps:
 
 1. Clone this repository:
     ```bash
     git clone https://github.com/IgorAmi52/Git-Diff-Analyzer.git
     cd Git-Diff-Analyzer
     ```
+### Building the Package  
 
-2. Install the dependencies:
+To package the project for distribution:  
+
+1. **Ensure `build` is installed:**  
     ```bash
-    pip install .
+    pip install --upgrade build
     ```
 
+2. **Build the package:**  
+    ```bash
+    python -m build -w
+    ```
+
+This will generate a `.whl` file inside the `dist/` directory.
+
+### Installing from Built Package  
+
+To install the built package:  
+
+```bash
+pip install dist/git_diff_analyzer-0.1.0-py3-none-any.whl
+```
 ## **Usage**  
 
 This library compares files between a **remote GitHub repository (`branchA`)** and a **local repository (`branchB`)** based on their merge base commit.  
@@ -43,7 +59,7 @@ This library compares files between a **remote GitHub repository (`branchA`)** a
 - Ensure you have a **local clone** of the repository.  
 - The local repository should have **both `branchA` (fetched remotely) and `branchB` (created locally)**.  
 
-### **3️⃣ Import and Use `compare_local_remote_changes`**  
+### **Import and Use `compare_local_remote_changes`**  
 
 #### **Example: Comparing Changed Files**  
 ```python
@@ -63,8 +79,6 @@ changed_files = compare_local_remote_changes(owner, repo, access_token, local_re
 # Output results
 print("Files changed in both branches independently:", changed_files)
 ```
-
-### **4️⃣ Import and Use `compare_local_remote_changes`**  
 
 If there are files that were changed independently in both (`branchA`) (remotely) and (`branchB`(locally) since their merge base, the script will print:
 
